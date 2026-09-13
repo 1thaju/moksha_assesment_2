@@ -1,0 +1,68 @@
+@import "tailwindcss";
+
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap");
+
+@theme {
+  --color-brand-purple: #111111;
+  --color-brand-purple-dark: #000000;
+  --color-brand-cyan: #f5f5f5;
+  --color-brand-navy: #111111;
+}
+
+:root {
+  font-family: "Inter", "Segoe UI", sans-serif;
+  color: #111111;
+  background: #f5f5f3;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: #f5f5f3;
+  color: #111111;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+}
+
+button,
+input,
+a {
+  font: inherit;
+}
+
+button,
+input,
+a,
+.card,
+.product-card {
+  transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease, background-color 180ms ease;
+}
+
+button:hover,
+input:hover,
+a:hover {
+  transform: translateY(-1px);
+}
+
+.app-shell {
+  background: #f5f5f3;
+}
+
+::selection {
+  background: rgba(17, 17, 17, 0.12);
+}

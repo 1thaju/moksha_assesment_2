@@ -113,18 +113,29 @@ If users and AI request volume increased significantly:
   rather than the Vite dev server, decoupling frontend scaling entirely from
   backend capacity.
 
-## AWS / Deployment Approach
+## Deployment Approach
 
-- **Frontend**: static build (`npm run build`) deployed to S3 + CloudFront, or
-  Vercel for simplicity.
-- **Backend**: containerized (Dockerfile) FastAPI app deployed to ECS
-  Fargate (or a single EC2/Lightsail instance for a lighter footprint at this
-  assignment's scale) behind an Application Load Balancer.
-- **Database**: RDS PostgreSQL (managed, automated backups).
-- **Secrets**: environment variables via ECS task definitions / AWS Secrets
-  Manager — never committed to the repo (see `.env.example` for the required
-  variables).
-- **Webhook endpoint**: must be publicly reachable over HTTPS for Stripe to
-  deliver events — in production this is just the deployed backend's public
-  URL; for local development, a tunnel (ngrok/Stripe CLI's `stripe listen`) is
-  needed to receive webhook events on localhost.
+- **Frontend**: static Vite build deployed to **Vercel**, connected directly
+  to the GitHub repo with auto-deploy on push. Environment variables
+  (`VITE_API_URL`, `VITE_GOOGLE_CLIENT_ID`) are set in Vercel's project
+  settings, not committed to the repo.
+- **Backend**: FastAPI app deployed to **Render** as a managed Python web
+  service (`uvicorn app.main:app --host 0.0.0.0 --port $PORT`), built from
+  `requirements.txt` and `runtime.txt` (Python 3.12). Render auto-deploys on
+  push to the connected branch.
+- **Database**: **Render-managed PostgreSQL**, connected via its internal
+  connection URL (`postgresql+asyncpg://...`) for the backend service, and
+  the external connection URL for local/administrative access (seeding,
+  `psql`, schema inspection).
+- **Secrets**: environment variables set directly in Render's (backend) and
+  Vercel's (frontend) dashboards — never committed to the repo (see
+  `.env.example` for the required variables).
+- **Webhook endpoint**: Stripe delivers events to the deployed Render
+  backend's public HTTPS URL (`/api/webhooks/stripe`), registered directly in
+  the Stripe Dashboard. For local development, the Stripe CLI's
+  `stripe listen --forward-to localhost:8000/api/webhooks/stripe` tunnels
+  events to localhost instead.
+- **Known trade-off**: Render's free tier spins the backend down after
+  inactivity, so the first request after idle time can take 30-60 seconds —
+  acceptable for an assessment deployment, not for production (see note in
+  "Known Scope and Trade-offs").

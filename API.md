@@ -30,12 +30,6 @@ Base URL: `http://localhost:8000/api`
 | GET | `/orders` | Admin | List all orders (any customer). |
 | GET | `/orders/{id}` | Bearer | Get one order — only the owner or an admin may view it. |
 
-## Payments
-| Method | Path | Auth | Description |
-|---|---|---|---|
-| POST | `/orders/{id}/checkout` | Bearer (owner) | Creates a Stripe Checkout Session for a pending order, returns the redirect URL. |
-| POST | `/webhooks/stripe` | Stripe signature | Receives payment confirmation/failure events from Stripe; transitions order status. Not called by the frontend. |
-
 ## AI Agent
 | Method | Path | Auth | Description |
 |---|---|---|---|

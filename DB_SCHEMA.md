@@ -43,11 +43,3 @@ PostgreSQL, managed via SQLAlchemy models in `backend/app/models/`.
 | product_name | string | **Snapshot** at purchase time — not a live join, so later product renames don't rewrite order history |
 | unit_price_cents | integer | **Snapshot** at purchase time — later price changes don't affect historical orders |
 | quantity | integer | |
-
-## Relationships
-- `users` 1 → N `orders`
-- `orders` 1 → N `order_items` (cascade delete)
-- `order_items.product_id` references `products`, but the item's `product_name`
-  / `unit_price_cents` are copied at creation time rather than always joined
-  live, so an order remains an accurate historical record even if the product
-  is later edited, repriced, or deleted.

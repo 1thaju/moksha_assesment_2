@@ -48,8 +48,6 @@ export function AdminDashboard() {
       });
   }, [user]);
 
-  // Server-side RBAC (require_admin dependency) is the real enforcement —
-  // this client-side redirect is just UX so non-admins don't see the page flash.
   if (!user) return <Navigate to="/login" replace />;
   if (user.role !== "admin") return <Navigate to="/" replace />;
 

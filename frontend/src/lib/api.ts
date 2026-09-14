@@ -36,7 +36,6 @@ async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
       const body = await res.json();
       detail = body.detail ?? detail;
     } catch {
-      // response wasn't JSON — fall back to statusText
     }
     throw new ApiError(res.status, detail);
   }

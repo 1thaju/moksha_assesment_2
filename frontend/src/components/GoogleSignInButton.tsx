@@ -19,15 +19,6 @@ declare global {
 
 const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID as string;
 
-/**
- * Renders Google's own Sign-In button (via Google Identity Services' hosted
- * script) and, on success, sends the resulting ID token to our backend's
- * /auth/google/login endpoint to be verified and exchanged for our session JWT.
- *
- * We never handle the user's Google password or verify the token ourselves
- * client-side — that verification happens server-side, which is the actual
- * security boundary (see app/services/google_auth.py).
- */
 export function GoogleSignInButton() {
   const buttonRef = useRef<HTMLDivElement>(null);
   const { loginWithGoogleIdToken } = useAuth();

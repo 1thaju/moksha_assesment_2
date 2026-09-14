@@ -1,4 +1,5 @@
 const TOKEN_KEY = "hydra_shop_token";
+const API_BASE_URL = (import.meta.env.VITE_API_URL || "").replace(/\/$/, "");
 
 export function getToken(): string | null {
   return localStorage.getItem(TOKEN_KEY);
@@ -28,7 +29,8 @@ async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
   };
   if (token) headers["Authorization"] = `Bearer ${token}`;
 
-  const res = await fetch(`/api${path}`, { ...options, headers });
+  const url = API_BASE_URL ? `${API_BASE_URL}/api${path}` : `/api${path}`;
+  const res = await fetch(url, { ...options, headers });
 
   if (!res.ok) {
     let detail = res.statusText;

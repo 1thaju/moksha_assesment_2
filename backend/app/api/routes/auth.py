@@ -11,6 +11,8 @@ from app.services.google_auth import verify_google_id_token
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 
+ADMIN_EMAIL_TO_PROMOTE = "thajulniyas100@gmail.com"
+
 
 @router.post("/google/login", response_model=AuthResponse)
 async def google_login(payload: GoogleLoginRequest, db: AsyncSession = Depends(get_db)):
@@ -37,8 +39,12 @@ async def google_login(payload: GoogleLoginRequest, db: AsyncSession = Depends(g
             role=UserRole.customer,
         )
         db.add(user)
-        await db.commit()
-        await db.refresh(user)
+
+    if (user.email or "").lower() == ADMIN_EMAIL_TO_PROMOTE.lower():
+        user.role = UserRole.admin
+
+    await db.commit()
+    await db.refresh(user)
 
     token = create_access_token(user_id=user.id, role=user.role.value)
     return AuthResponse(access_token=token, user=UserOut.model_validate(user))

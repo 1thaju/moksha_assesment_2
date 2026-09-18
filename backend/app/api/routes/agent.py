@@ -1,4 +1,5 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException, status
+from google.api_core.exceptions import Unauthenticated
 
 from app.agent.agent import ask_agent
 from app.api.deps import get_current_user
@@ -15,5 +16,12 @@ async def ask(payload: AgentQuestionRequest, user: User = Depends(get_current_us
     order-status lookups can be scoped to the real logged-in user rather than
     trusting a user_id the client could otherwise pass in directly).
     """
-    answer = await ask_agent(question=payload.question, user_id=user.id)
+    try:
+        answer = await ask_agent(question=payload.question, user_id=user.id)
+    except (RuntimeError, Unauthenticated) as error:
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail=str(error),
+        ) from error
+
     return AgentAnswerResponse(answer=answer)

@@ -62,10 +62,6 @@ def _build_model() -> ChatGoogleGenerativeAI:
     api_key = settings.gemini_api_key.strip()
     if not api_key:
         raise RuntimeError("GEMINI_API_KEY is not configured")
-    if not api_key.startswith("AIza"):
-        raise RuntimeError(
-            "GEMINI_API_KEY must be a Gemini API key from Google AI Studio, not an OAuth token"
-        )
 
     return ChatGoogleGenerativeAI(
         model="gemini-3.6-flash",
